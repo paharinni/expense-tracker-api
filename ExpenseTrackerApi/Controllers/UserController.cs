@@ -16,12 +16,24 @@ public class UserController : ControllerBase
         _dbContext = dbContext;
     }
     
-    //Get all
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetAllUsersAsync()
     {
         return await _dbContext.Users
-            .Select(u => u)
             .ToListAsync();
     }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<User>> GetUserByIdAsync([FromRoute] int id)
+    {
+        var user = await _dbContext.Users.FindAsync(id);
+
+        if (user == null)
+        {
+            return NotFound();
+        }
+        
+        return Ok(user);
+    }
+    
 }
