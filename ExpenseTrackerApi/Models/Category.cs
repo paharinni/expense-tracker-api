@@ -9,7 +9,6 @@ public class Category
     [Required]
     [Column("id")]
     public int Id { get; set; }
-    [Required]
     [Column("name")]
     public string Name { get; set; }
     

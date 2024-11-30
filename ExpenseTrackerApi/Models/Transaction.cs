@@ -9,21 +9,16 @@ public class Transaction
     [Required]
     [Column("id")]
     public int Id { get; set; }
-    [Required]
     [Column("name")]
     public string Name { get; set; }
-    [Required]
     [Column("amount")]
     public decimal Amount { get; set; }
     [Column("description")]
     public string Description { get; set; }
-    [Required]
     [Column("date_completed")]
     public DateTime DateCompleted { get; set; }
-    [Required]
     [Column("category_id")]
     public int CategoryId { get; set; }
-    [Required]
     [Column("user_id")]
     public int UserId { get; set; }
     

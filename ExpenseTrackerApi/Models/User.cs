@@ -1,12 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ExpenseTrackerApi.Models;
 
 public class User
 {
-    [Required]
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column("id")]
     public int Id { get; set; }
     [Required]
@@ -20,13 +21,13 @@ public class User
     public string Username { get; set; }
     [Required]
     [Column("phone_number")]
-    public int PhoneNumber { get; set; }
+    public string PhoneNumber { get; set; }
     [Required]
     [Column("email")]
     public string Email { get; set; }
     [Required]
     [Column("password_hash")]
     public string PasswordHash { get; set; }
-    
+    [JsonIgnore]
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }

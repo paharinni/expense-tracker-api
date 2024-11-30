@@ -114,8 +114,9 @@ namespace ExpenseTrackerApi.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("password_hash");
 
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("int")
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("phone_number");
 
                     b.Property<string>("Username")
