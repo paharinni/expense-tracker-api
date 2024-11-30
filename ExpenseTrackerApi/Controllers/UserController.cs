@@ -19,8 +19,7 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetAllUsersAsync()
     {
-        return await _dbContext.Users
-            .ToListAsync();
+        return await _dbContext.Users.ToListAsync();
     }
 
     [HttpGet("{id:int}")]
