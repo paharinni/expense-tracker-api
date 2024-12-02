@@ -31,3 +31,6 @@ public class User
     [JsonIgnore]
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }
+
+// TODO
+// change user id to guid

@@ -1,10 +1,12 @@
 using ExpenseTrackerApi.Data;
 using ExpenseTrackerApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTrackerApi.Controllers;
 
+[Authorize]
 [Route("api/user")]
 [ApiController]
 public class UserController : ControllerBase
