@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ExpenseTrackerApi.Models;
+namespace ExpenseTrackerApi.Entities.Models;
 
 public class Transaction
 {

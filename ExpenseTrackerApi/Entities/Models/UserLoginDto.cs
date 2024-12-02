@@ -1,4 +1,4 @@
-namespace ExpenseTrackerApi.Models;
+namespace ExpenseTrackerApi.Entities.Models;
 
 public class UserLoginDto
 {
