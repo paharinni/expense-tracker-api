@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using ExpenseTrackerApi.Entities.Enums;
 
 namespace ExpenseTrackerApi.Entities.Models;
 
@@ -28,6 +29,10 @@ public class User
     [Required]
     [Column("password_hash")]
     public string PasswordHash { get; set; }
+    
+    [Required]
+    public UserRole Role { get; set; } = UserRole.User;
+    
     [JsonIgnore]
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }
