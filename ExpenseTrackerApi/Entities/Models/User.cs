@@ -10,7 +10,7 @@ public class User
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     [Column("id")]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     [Required]
     [Column("first_name")]
     public string FirstName { get; set; }
@@ -36,6 +36,3 @@ public class User
     [JsonIgnore]
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }
-
-// TODO
-// change user id to guid

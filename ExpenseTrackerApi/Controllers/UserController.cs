@@ -24,8 +24,8 @@ public class UserController : ControllerBase
         return await _dbContext.Users.ToListAsync();
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<User>> GetUserByIdAsync(int id)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<User>> GetUserByIdAsync(Guid id)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(i => i.Id == id);
 
@@ -57,7 +57,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<User>> UpdateUserAsync(int id, User user)
+    public async Task<ActionResult<User>> UpdateUserAsync(Guid id, User user)
     {
         var updatedUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
         if (updatedUser == null)
@@ -78,7 +78,7 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult<User>> DeleteUserAsync(int id)
+    public async Task<ActionResult<User>> DeleteUserAsync(Guid id)
     {
         var deletedUser = await _dbContext.Users.FirstOrDefaultAsync(i => i.Id == id);
         if (deletedUser == null)
