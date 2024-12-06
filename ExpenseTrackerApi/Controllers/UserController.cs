@@ -1,4 +1,5 @@
 using ExpenseTrackerApi.Data;
+using ExpenseTrackerApi.Entities.Enums;
 using ExpenseTrackerApi.Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -56,7 +57,7 @@ public class UserController : ControllerBase
         return Ok(createdUser);
     }
 
-    [HttpPut("{id:int}")]
+    [HttpPut("{id:guid}")]
     public async Task<ActionResult<User>> UpdateUserAsync(Guid id, User user)
     {
         var updatedUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
@@ -77,7 +78,7 @@ public class UserController : ControllerBase
         return Ok(updatedUser);
     }
 
-    [HttpDelete("{id:int}")]
+    [HttpDelete("{id:guid}")]
     public async Task<ActionResult<User>> DeleteUserAsync(Guid id)
     {
         var deletedUser = await _dbContext.Users.FirstOrDefaultAsync(i => i.Id == id);
@@ -90,6 +91,27 @@ public class UserController : ControllerBase
         await _dbContext.SaveChangesAsync();
         
         return NoContent();
+    }
+
+    [HttpPatch("{id:guid}/change-role")]
+    public async Task<ActionResult<User>> UpdateUserRoleAsync(Guid id, [FromBody] UserRole newRole)
+    {
+        if (!Enum.IsDefined(typeof(UserRole), newRole))
+        {
+            return BadRequest("Invalid role.");
+        }
+        
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+
+        if (user == null)
+        {
+            return NotFound($"User with required guid {id} not found.");
+        }
+        
+        user.Role = newRole;
+        await _dbContext.SaveChangesAsync();
+        
+        return Ok(user);
     }
 }
     
