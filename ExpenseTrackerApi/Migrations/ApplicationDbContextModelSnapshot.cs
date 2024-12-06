@@ -22,7 +22,7 @@ namespace ExpenseTrackerApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ExpenseTrackerApi.Models.Category", b =>
+            modelBuilder.Entity("ExpenseTrackerApi.Entities.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -41,7 +41,7 @@ namespace ExpenseTrackerApi.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("ExpenseTrackerApi.Models.Transaction", b =>
+            modelBuilder.Entity("ExpenseTrackerApi.Entities.Models.Transaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -85,7 +85,7 @@ namespace ExpenseTrackerApi.Migrations
                     b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("ExpenseTrackerApi.Models.User", b =>
+            modelBuilder.Entity("ExpenseTrackerApi.Entities.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -119,6 +119,9 @@ namespace ExpenseTrackerApi.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("phone_number");
 
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -129,31 +132,27 @@ namespace ExpenseTrackerApi.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ExpenseTrackerApi.Models.Transaction", b =>
+            modelBuilder.Entity("ExpenseTrackerApi.Entities.Models.Transaction", b =>
                 {
-                    b.HasOne("ExpenseTrackerApi.Models.Category", "Category")
+                    b.HasOne("ExpenseTrackerApi.Entities.Models.Category", null)
                         .WithMany("Transactions")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpenseTrackerApi.Models.User", "User")
+                    b.HasOne("ExpenseTrackerApi.Entities.Models.User", null)
                         .WithMany("Transactions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ExpenseTrackerApi.Models.Category", b =>
+            modelBuilder.Entity("ExpenseTrackerApi.Entities.Models.Category", b =>
                 {
                     b.Navigation("Transactions");
                 });
 
-            modelBuilder.Entity("ExpenseTrackerApi.Models.User", b =>
+            modelBuilder.Entity("ExpenseTrackerApi.Entities.Models.User", b =>
                 {
                     b.Navigation("Transactions");
                 });

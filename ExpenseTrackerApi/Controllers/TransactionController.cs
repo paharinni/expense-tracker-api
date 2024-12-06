@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ExpenseTrackerApi.Controllers;
 
-[Authorize]
+[Authorize(Roles = "SuperAdmin, Admin")]
 [Route("api/transaction")]
 [ApiController]
 public class TransactionController : ControllerBase

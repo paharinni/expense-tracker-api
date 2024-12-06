@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTrackerApi.Controllers;
 
-[Authorize]
+[Authorize(Roles = "SuperAdmin")]
 [Route("api/user")]
 [ApiController]
 public class UserController : ControllerBase
