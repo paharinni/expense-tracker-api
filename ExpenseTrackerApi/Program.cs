@@ -57,6 +57,14 @@ builder.Services.AddSwaggerGen(c => {
 
 var app = builder.Build();
 
+// Seed user roles
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate();
+    await DatabaseSeeder.SeedAsync(dbContext);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
