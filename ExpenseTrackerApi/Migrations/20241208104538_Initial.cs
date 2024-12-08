@@ -35,7 +35,7 @@ namespace ExpenseTrackerApi.Migrations
                     phone_number = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     password_hash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false)
+                    role = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -53,8 +53,7 @@ namespace ExpenseTrackerApi.Migrations
                     description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     date_completed = table.Column<DateTime>(type: "datetime2", nullable: false),
                     category_id = table.Column<int>(type: "int", nullable: false),
-                    user_id = table.Column<int>(type: "int", nullable: false),
-                    UserId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -66,10 +65,11 @@ namespace ExpenseTrackerApi.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Transactions_Users_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Transactions_Users_user_id",
+                        column: x => x.user_id,
                         principalTable: "Users",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -78,9 +78,9 @@ namespace ExpenseTrackerApi.Migrations
                 column: "category_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_UserId1",
+                name: "IX_Transactions_user_id",
                 table: "Transactions",
-                column: "UserId1");
+                column: "user_id");
         }
 
         /// <inheritdoc />

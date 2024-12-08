@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExpenseTrackerApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241206032609_Initial")]
+    [Migration("20241208104538_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -75,18 +75,15 @@ namespace ExpenseTrackerApi.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("name");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("user_id");
-
-                    b.Property<Guid?>("UserId1")
-                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Transactions");
                 });
@@ -124,7 +121,8 @@ namespace ExpenseTrackerApi.Migrations
                         .HasColumnName("phone_number");
 
                     b.Property<int>("Role")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("role");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -138,15 +136,21 @@ namespace ExpenseTrackerApi.Migrations
 
             modelBuilder.Entity("ExpenseTrackerApi.Entities.Models.Transaction", b =>
                 {
-                    b.HasOne("ExpenseTrackerApi.Entities.Models.Category", null)
+                    b.HasOne("ExpenseTrackerApi.Entities.Models.Category", "Category")
                         .WithMany("Transactions")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ExpenseTrackerApi.Entities.Models.User", null)
+                    b.HasOne("ExpenseTrackerApi.Entities.Models.User", "User")
                         .WithMany("Transactions")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ExpenseTrackerApi.Entities.Models.Category", b =>
