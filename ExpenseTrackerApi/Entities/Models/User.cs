@@ -31,6 +31,7 @@ public class User
     public string PasswordHash { get; set; }
     
     [Required]
+    [Column("role")]
     public UserRole Role { get; set; } = UserRole.User;
     
     [JsonIgnore]

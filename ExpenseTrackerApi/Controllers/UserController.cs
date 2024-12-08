@@ -1,3 +1,4 @@
+using ExpenseTrackerApi.Abstractions;
 using ExpenseTrackerApi.Data;
 using ExpenseTrackerApi.Entities.Enums;
 using ExpenseTrackerApi.Entities.Models;

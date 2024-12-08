@@ -65,8 +65,10 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
+    
     dbContext.Database.Migrate();
-    await DatabaseSeeder.SeedAsync(dbContext);
+    await DatabaseSeeder.SeedAsync(dbContext, passwordService);
 }
 
 // Configure the HTTP request pipeline.
