@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
+using ExpenseTrackerApi.Abstractions;
 using ExpenseTrackerApi.Data;
 using ExpenseTrackerApi.Entities.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +16,13 @@ public class AuthController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly IConfiguration _configuration;
+    private readonly IPasswordService _passwordService;
 
-    public AuthController(ApplicationDbContext context, IConfiguration configuration)
+    public AuthController(ApplicationDbContext context, IConfiguration configuration, IPasswordService passwordService)
     {
         _context = context;
         _configuration = configuration;
+        _passwordService = passwordService;
     }
 
     [HttpPost("register")]
@@ -31,10 +33,19 @@ public class AuthController : ControllerBase
 
         if (await _context.Users.AnyAsync(u => u.Username == user.Username))
             return BadRequest("Username is already taken.");
-
-        user.PasswordHash = HashPassword(user.PasswordHash);
         
-        _context.Users.Add(user);
+        var hashedPassword = _passwordService.HashPassword(user.PasswordHash);
+        var createdUser = new User
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            PhoneNumber = user.PhoneNumber,
+            PasswordHash = hashedPassword,
+            Username = user.Username,
+        };
+        
+        _context.Users.Add(createdUser);
         await _context.SaveChangesAsync();
         
         return Ok(user);
@@ -45,26 +56,38 @@ public class AuthController : ControllerBase
     {
         var userFromDb = await _context.Users.FirstOrDefaultAsync(u => u.Username == userLoginDto.Username);
 
-        if (userFromDb == null || !VerifyPassword(userLoginDto.PasswordHash, userFromDb.PasswordHash))
+        if (userFromDb == null)
         {
-            return Unauthorized("Invalid credentials.");
+            return BadRequest("No such user exists.");
         }
+        
+        bool verified = _passwordService.VerifyPassword(userFromDb.PasswordHash, userLoginDto.PasswordHash);
+
+        if (!verified)
+        {
+            return BadRequest("Invalid password.");
+        }
+
+        // if (userFromDb == null || !VerifyPassword(userLoginDto.PasswordHash, userFromDb.PasswordHash))
+        // {
+        //     return Unauthorized("Invalid credentials.");
+        // }
 
         var token = GenerateJwtToken(userFromDb);
         return Ok(new {token});
     }
     
-    private string HashPassword(string password)
-    {
-        using var sha256 = SHA256.Create();
-        var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-        return Convert.ToBase64String(bytes);
-    }
-
-    private bool VerifyPassword(string inputPassword, string storedHash)
-    {
-        return HashPassword(inputPassword) == storedHash;
-    }
+    // private string HashPassword(string password)
+    // {
+    //     using var sha256 = SHA256.Create();
+    //     var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+    //     return Convert.ToBase64String(bytes);
+    // }
+    //
+    // private bool VerifyPassword(string inputPassword, string storedHash)
+    // {
+    //     return HashPassword(inputPassword) == storedHash;
+    // }
     
     private string GenerateJwtToken(User user)
     {

@@ -1,6 +1,7 @@
 using ExpenseTrackerApi.Data;
 using ExpenseTrackerApi.Entities.Enums;
 using ExpenseTrackerApi.Entities.Models;
+using ExpenseTrackerApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace ExpenseTrackerApi.Controllers;
 public class UserController : ControllerBase
 {
     private readonly ApplicationDbContext _dbContext;
+    private readonly PasswordService _passwordService;
 
     public UserController(ApplicationDbContext dbContext)
     {
@@ -41,13 +43,14 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<User>> CreateUserAsync(User user)
     {
+        var hashedPassword = _passwordService.HashPassword(user.PasswordHash);
         var createdUser = new User
         {
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email,
             PhoneNumber = user.PhoneNumber,
-            PasswordHash = user.PasswordHash,
+            PasswordHash = hashedPassword,
             Username = user.Username,
         };
 

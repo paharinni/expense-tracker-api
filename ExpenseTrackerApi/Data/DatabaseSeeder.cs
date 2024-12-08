@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using ExpenseTrackerApi.Entities.Enums;
 using ExpenseTrackerApi.Entities.Models;
+using ExpenseTrackerApi.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTrackerApi.Data;
@@ -9,6 +10,7 @@ namespace ExpenseTrackerApi.Data;
 public static class DatabaseSeeder
 {
     private static readonly ApplicationDbContext _context;
+    private static readonly PasswordService _passwordService;
     
     public static async Task SeedAsync(ApplicationDbContext dbContext)
     {
@@ -21,7 +23,7 @@ public static class DatabaseSeeder
                 LastName = "Pakharenko",
                 PhoneNumber = "1234567890",
                 Email = "test123@gmail.com",
-                PasswordHash = HashPassword("Test123!"),
+                PasswordHash = _passwordService.HashPassword("Test123!"),
                 Role = UserRole.SuperAdmin
             };
 
@@ -32,22 +34,12 @@ public static class DatabaseSeeder
                 LastName = "admin",
                 PhoneNumber = "1234567890",
                 Email = "admin@example.com",
-                PasswordHash = HashPassword("admin@example.com"),
+                PasswordHash = _passwordService.HashPassword("admin@example.com"),
                 Role = UserRole.Admin
             };
 
             dbContext.Users.AddRange(superAdmin, admin);
             await dbContext.SaveChangesAsync();
         }
-    }
-    
-    // todo
-    // move hashpassword to own class
-
-    private static string HashPassword(string password)
-    {
-        using var sha256 = SHA256.Create();
-        var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-        return Convert.ToBase64String(bytes);
     }
 }
