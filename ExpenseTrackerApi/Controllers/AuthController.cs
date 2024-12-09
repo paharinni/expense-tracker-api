@@ -30,11 +30,15 @@ public class AuthController : ControllerBase
     {
         if (await _context.Users.AnyAsync(u => u.Email == user.Email))
             return BadRequest("User with this email already exists.");
-
+        
         if (await _context.Users.AnyAsync(u => u.Username == user.Username))
             return BadRequest("Username is already taken.");
         
+        if (await _context.Users.AnyAsync(u => u.PhoneNumber == user.PhoneNumber))
+            return BadRequest("Phone number is already taken.");
+        
         var hashedPassword = _passwordService.HashPassword(user.PasswordHash);
+        
         var createdUser = new User
         {
             FirstName = user.FirstName,
@@ -61,33 +65,17 @@ public class AuthController : ControllerBase
             return BadRequest("No such user exists.");
         }
         
-        bool verified = _passwordService.VerifyPassword(userFromDb.PasswordHash, userLoginDto.PasswordHash);
+        var verified = _passwordService.VerifyPassword(userFromDb.PasswordHash, userLoginDto.PasswordHash);
 
         if (!verified)
         {
             return BadRequest("Invalid password.");
         }
-
-        // if (userFromDb == null || !VerifyPassword(userLoginDto.PasswordHash, userFromDb.PasswordHash))
-        // {
-        //     return Unauthorized("Invalid credentials.");
-        // }
-
+        
         var token = GenerateJwtToken(userFromDb);
+        
         return Ok(new {token});
     }
-    
-    // private string HashPassword(string password)
-    // {
-    //     using var sha256 = SHA256.Create();
-    //     var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-    //     return Convert.ToBase64String(bytes);
-    // }
-    //
-    // private bool VerifyPassword(string inputPassword, string storedHash)
-    // {
-    //     return HashPassword(inputPassword) == storedHash;
-    // }
     
     private string GenerateJwtToken(User user)
     {
