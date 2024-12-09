@@ -21,11 +21,11 @@ public class Transaction
     
     [Column("category_id")]
     public int CategoryId { get; set; }
-    //[JsonIgnore]
-    //public Category Category { get; set; } = new Category();
+    [JsonIgnore]
+    public Category? Category { get; set; }
 
     [Column("user_id")]
     public Guid UserId { get; set; }
-    //[JsonIgnore]
-    //public User User { get; set; } = new User();
+    [JsonIgnore]
+    public User? User { get; set; }
 }
