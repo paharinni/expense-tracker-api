@@ -9,36 +9,41 @@ public class DatabaseSeeder
 {
     private readonly ApplicationDbContext _context;
     private readonly IPasswordService _passwordService;
+    private readonly IConfiguration _configuration;
 
-    public DatabaseSeeder(ApplicationDbContext context, IPasswordService passwordService)
+    public DatabaseSeeder(ApplicationDbContext context, IPasswordService passwordService, IConfiguration configuration)
     {
         _context = context;
         _passwordService = passwordService;
+        _configuration = configuration;
     }
     
     public async Task SeedAsync()
     {
         if (!await _context.Users.AnyAsync())
         {
+            var superAdminConfig = _configuration.GetSection("DefaultUsers:SuperAdmin");
+            var adminConfig = _configuration.GetSection("DefaultUsers:Admin");
+            
             var superAdmin = new User
             {
-                Username = "superadmin",
-                FirstName = "superadmin",
-                LastName = "superadmin",
-                PhoneNumber = "1234567890",
-                Email = "superadmin@example.com",
-                PasswordHash = _passwordService.HashPassword("superadmin"),
+                Username = superAdminConfig["Username"],
+                FirstName = superAdminConfig["FirstName"],
+                LastName = superAdminConfig["LastName"],
+                PhoneNumber = superAdminConfig["PhoneNumber"],
+                Email = superAdminConfig["Email"],
+                PasswordHash = _passwordService.HashPassword(superAdminConfig["Password"]),
                 Role = UserRole.SuperAdmin
             };
 
             var admin = new User
             {
-                Username = "admin",
-                FirstName = "admin",
-                LastName = "admin",
-                PhoneNumber = "1234567890",
-                Email = "admin@example.com",
-                PasswordHash = _passwordService.HashPassword("admin"),
+                Username = adminConfig["Username"],
+                FirstName = adminConfig["FirstName"],
+                LastName = adminConfig["LastName"],
+                PhoneNumber = adminConfig["PhoneNumber"],
+                Email = adminConfig["Email"],
+                PasswordHash = _passwordService.HashPassword(adminConfig["Password"]),
                 Role = UserRole.Admin
             };
 
