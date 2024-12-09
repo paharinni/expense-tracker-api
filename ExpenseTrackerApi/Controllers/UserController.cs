@@ -15,11 +15,12 @@ namespace ExpenseTrackerApi.Controllers;
 public class UserController : ControllerBase
 {
     private readonly ApplicationDbContext _dbContext;
-    private readonly PasswordService _passwordService;
+    private readonly IPasswordService _passwordService;
 
-    public UserController(ApplicationDbContext dbContext)
+    public UserController(ApplicationDbContext dbContext, IPasswordService passwordService)
     {
         _dbContext = dbContext;
+        _passwordService = passwordService;
     }
 
     [HttpGet]
