@@ -5,8 +5,8 @@ namespace ExpenseTrackerApi.Services;
 
 public class PasswordService : IPasswordService
 {
-    private const int SaltSize = 16; // 128-bit
-    private const int KeySize = 32; // 256-bit
+    private const int SaltSize = 16;
+    private const int KeySize = 32;
     private const int Iterations = 10000;
 
     public string HashPassword(string password)
