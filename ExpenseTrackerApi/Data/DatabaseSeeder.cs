@@ -1,27 +1,33 @@
-using System.Security.Cryptography;
-using System.Text;
 using ExpenseTrackerApi.Abstractions;
 using ExpenseTrackerApi.Entities.Enums;
 using ExpenseTrackerApi.Entities.Models;
-using ExpenseTrackerApi.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTrackerApi.Data;
 
-public static class DatabaseSeeder
+public class DatabaseSeeder
 {
-    public static async Task SeedAsync(ApplicationDbContext dbContext, IPasswordService passwordService)
+    private readonly ApplicationDbContext _context;
+    private readonly IPasswordService _passwordService;
+
+    public DatabaseSeeder(ApplicationDbContext context, IPasswordService passwordService)
     {
-        if (!await dbContext.Users.AnyAsync())
+        _context = context;
+        _passwordService = passwordService;
+    }
+    
+    public async Task SeedAsync()
+    {
+        if (!await _context.Users.AnyAsync())
         {
             var superAdmin = new User
             {
-                Username = "paharinni",
-                FirstName = "Serhii",
-                LastName = "Pakharenko",
+                Username = "superadmin",
+                FirstName = "superadmin",
+                LastName = "superadmin",
                 PhoneNumber = "1234567890",
-                Email = "test123@gmail.com",
-                PasswordHash = passwordService.HashPassword("Test123!"),
+                Email = "superadmin@example.com",
+                PasswordHash = _passwordService.HashPassword("superadmin"),
                 Role = UserRole.SuperAdmin
             };
 
@@ -32,12 +38,12 @@ public static class DatabaseSeeder
                 LastName = "admin",
                 PhoneNumber = "1234567890",
                 Email = "admin@example.com",
-                PasswordHash = passwordService.HashPassword("admin@example.com"),
+                PasswordHash = _passwordService.HashPassword("admin"),
                 Role = UserRole.Admin
             };
 
-            dbContext.Users.AddRange(superAdmin, admin);
-            await dbContext.SaveChangesAsync();
+            _context.Users.AddRange(superAdmin, admin);
+            await _context.SaveChangesAsync();
         }
     }
 }

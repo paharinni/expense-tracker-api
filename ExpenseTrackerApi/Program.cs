@@ -33,6 +33,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<DatabaseSeeder>();
 
 builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc("v1", new OpenApiInfo {
@@ -61,14 +62,14 @@ builder.Services.AddSwaggerGen(c => {
 
 var app = builder.Build();
 
-// Seed user roles
+// Seed the database.
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    var passwordService = scope.ServiceProvider.GetRequiredService<IPasswordService>();
-    
     dbContext.Database.Migrate();
-    await DatabaseSeeder.SeedAsync(dbContext, passwordService);
+
+    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+    await seeder.SeedAsync();
 }
 
 // Configure the HTTP request pipeline.
